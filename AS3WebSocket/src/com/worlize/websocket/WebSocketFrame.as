@@ -17,7 +17,6 @@
 package com.worlize.websocket
 {
 	import flash.errors.IOError;
-	import flash.events.IOErrorEvent;
 	import flash.utils.ByteArray;
 	import flash.utils.Endian;
 	import flash.utils.IDataInput;

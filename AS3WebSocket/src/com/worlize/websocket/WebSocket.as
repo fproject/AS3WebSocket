@@ -24,12 +24,9 @@ package com.worlize.websocket
 	import com.hurlant.crypto.tls.TLSEngine;
 	import com.hurlant.crypto.tls.TLSSecurityParameters;
 	import com.hurlant.crypto.tls.TLSSocket;
-	import com.hurlant.util.Base64;
-	import com.hurlant.util.Hex;
 	
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
-	import flash.events.IEventDispatcher;
 	import flash.events.IOErrorEvent;
 	import flash.events.ProgressEvent;
 	import flash.events.SecurityErrorEvent;
@@ -37,8 +34,9 @@ package com.worlize.websocket
 	import flash.net.Socket;
 	import flash.utils.ByteArray;
 	import flash.utils.Endian;
-	import flash.utils.IDataInput;
 	import flash.utils.Timer;
+	
+	import mx.utils.Base64Encoder;
 	
 	[Event(name="connectionFail",type="com.worlize.websocket.WebSocketErrorEvent")]
 	[Event(name="ioError",type="flash.events.IOErrorEvent")]
@@ -236,13 +234,25 @@ package com.worlize.websocket
 			_resource = path + query;
 		}
 		
+		private static var _base64Encoder:Base64Encoder;
+		
+		private function get base64Encoder():Base64Encoder
+		{
+			if(_base64Encoder == null)
+				_base64Encoder = new Base64Encoder;
+			else
+				_base64Encoder.reset();
+			return _base64Encoder;
+		}
+		
 		private function generateNonce():void {
 			nonce = new ByteArray();
 			for (var i:int = 0; i < 16; i++) {
 				nonce.writeByte(Math.round(Math.random()*0xFF));
 			}
 			nonce.position = 0;
-			base64nonce = Base64.encodeByteArray(nonce);
+			base64Encoder.encodeBytes(nonce);
+			base64nonce = base64Encoder.toString();
 		}
 		
 		public function get readyState():int {
@@ -853,7 +863,8 @@ package com.worlize.websocket
 					else if (lcName === 'sec-websocket-accept') {
 						var byteArray:ByteArray = new ByteArray();
 						byteArray.writeUTFBytes(base64nonce + "258EAFA5-E914-47DA-95CA-C5AB0DC85B11");
-						var expectedKey:String = Base64.encodeByteArray(new SHA1().hash(byteArray));
+						base64Encoder.encodeBytes(new SHA1().hash(byteArray));
+						var expectedKey:String = base64Encoder.toString();
 						if (debug) {
 							logger("Expected Sec-WebSocket-Accept value: " + expectedKey);
 						}
