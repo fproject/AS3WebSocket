@@ -19,7 +19,7 @@ package com.worlize.websocket
 	import com.adobe.net.URI;
 	import com.adobe.net.URIEncodingBitmap;
 	import com.adobe.utils.StringUtil;
-	import com.hurlant.crypto.hash.SHA1;
+	import com.hurlant.crypto.Crypto;
 	import com.hurlant.crypto.tls.TLSConfig;
 	import com.hurlant.crypto.tls.TLSEngine;
 	import com.hurlant.crypto.tls.TLSSecurityParameters;
@@ -53,7 +53,8 @@ package com.worlize.websocket
 		private static const MODE_BINARY:int = 0;
 		
 		private static const MAX_HANDSHAKE_BYTES:int = 10 * 1024; // 10KiB
-		
+		private static const HASH:String = "sha1";
+		 
 		private var _bufferedAmount:int = 0;
 		
 		private var _readyState:int;
@@ -863,7 +864,7 @@ package com.worlize.websocket
 					else if (lcName === 'sec-websocket-accept') {
 						var byteArray:ByteArray = new ByteArray();
 						byteArray.writeUTFBytes(base64nonce + "258EAFA5-E914-47DA-95CA-C5AB0DC85B11");
-						base64Encoder.encodeBytes(new SHA1().hash(byteArray));
+						base64Encoder.encodeBytes(Crypto.getHash(HASH).hash(byteArray));
 						var expectedKey:String = base64Encoder.toString();
 						if (debug) {
 							logger("Expected Sec-WebSocket-Accept value: " + expectedKey);
