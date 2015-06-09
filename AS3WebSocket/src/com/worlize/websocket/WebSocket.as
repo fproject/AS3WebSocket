@@ -20,6 +20,7 @@ package com.worlize.websocket
 	import com.adobe.net.URIEncodingBitmap;
 	import com.adobe.utils.StringUtil;
 	import com.hurlant.crypto.Crypto;
+	import com.hurlant.crypto.hash.SHA1;
 	import com.hurlant.crypto.tls.TLSConfig;
 	import com.hurlant.crypto.tls.TLSEngine;
 	import com.hurlant.crypto.tls.TLSSecurityParameters;
@@ -53,7 +54,7 @@ package com.worlize.websocket
 		private static const MODE_BINARY:int = 0;
 		
 		private static const MAX_HANDSHAKE_BYTES:int = 10 * 1024; // 10KiB
-		private static const HASH:String = "sha1";
+		private static const HASH:Class = SHA1;
 		 
 		private var _bufferedAmount:int = 0;
 		
