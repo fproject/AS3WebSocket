@@ -25,6 +25,7 @@ package com.worlize.websocket
 	import com.hurlant.crypto.tls.TLSEngine;
 	import com.hurlant.crypto.tls.TLSSecurityParameters;
 	import com.hurlant.crypto.tls.TLSSocket;
+	import com.hurlant.util.Base64;
 	
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
@@ -865,8 +866,13 @@ package com.worlize.websocket
 					else if (lcName === 'sec-websocket-accept') {
 						var byteArray:ByteArray = new ByteArray();
 						byteArray.writeUTFBytes(base64nonce + "258EAFA5-E914-47DA-95CA-C5AB0DC85B11");
-						base64Encoder.encodeBytes(Crypto.getHash(HASH).hash(byteArray));
-						var expectedKey:String = base64Encoder.toString();
+						
+						//base64Encoder.encodeBytes(Crypto.getHash(HASH).hash(byteArray));
+						//var expectedKey:String = base64Encoder.toString();
+						
+						// Fix-bug: the base64 encoder of mx may have error. 
+						// Using Base64 of com.hurlant.util instead
+						var expectedKey:String = Base64.encodeByteArray(Crypto.getHash(HASH).hash(byteArray));
 						if (debug) {
 							logger("Expected Sec-WebSocket-Accept value: " + expectedKey);
 						}
