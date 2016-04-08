@@ -11,7 +11,9 @@
 			private var currentCase:int = 1;
 			private var caseCount:int = 0;
 			
-			
+			/**
+			* Log the datato status bar
+			*/
 			private function log(data:String):void {
 				trace(data);
 				statusDisplay.text = data;
